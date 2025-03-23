@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+  
+}
+
+h1, p, th, td, i, #productModal, #delProductModal, #form-login {
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+.btn.btn-sm.btn-edit {
+    background-color: #73DB6A;
+    border: 1px solid #000000;
+    font-family: 'Noto Sans TC', sans-serif;
+  
+    &:hover {
+      background-color: #A5EE9D;
+    }
+}
+
+.btn.btn-sm.btn-delete {
+    background-color: #E0E0E0;
+    border: 1px solid #9B9B9B;
+  
+    &:hover {
+      background-color: #333435;
+    }
+}
