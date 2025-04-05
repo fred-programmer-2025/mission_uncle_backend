@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router";
 import axios from 'axios';
@@ -37,7 +37,7 @@ export default function UncleList() {
       const res = await axios.get(`${BASE_URL}/api/${API_PATH}/admin/products`);
       // 讀取資料庫產品資料，並進行更新
       setProducts(res.data.products);
-    } catch (error) {
+    } catch {
       alert("取得產品失敗");
     } finally {
       setIsScreenLoading(false);
@@ -45,15 +45,15 @@ export default function UncleList() {
   }
 
   // 驗證是否已登入
-  const checkUserLogin = async () => {
+  const checkUserLogin = useCallback(async () => {
     try {
       await axios.post(`${BASE_URL}/api/user/check`);
       getProducts();
       setIsAuth(true);
-    } catch (error) {
-      alert(error);
+    } catch {
+      alert("驗證登入失敗");
     }
-  }
+  }, [])
 
   useEffect(() => {
     // 取得驗證token
@@ -69,7 +69,7 @@ export default function UncleList() {
       checkUserLogin();
     }
 
-  }, [])
+  }, [checkUserLogin, navigate])
 
   // 取得productModal DOM元素
   const productModalRef = useRef(null);
@@ -180,7 +180,7 @@ export default function UncleList() {
           is_enabled: tempProduct.is_enabled ? 1 : 0
         }
       });
-    } catch (error) {
+    } catch {
       alert('新增產品失敗');
     }
   }
@@ -196,7 +196,7 @@ export default function UncleList() {
           is_enabled: tempProduct.is_enabled ? 1 : 0
         }
       });
-    } catch (error) {
+    } catch {
       alert('新增產品失敗');
     }
   }
@@ -208,7 +208,7 @@ export default function UncleList() {
       await apiCall();
       getProducts();
       handleCloseProductModal();
-    } catch (error) {
+    } catch {
       alert('更新產品失敗');
     }
   }
@@ -217,7 +217,7 @@ export default function UncleList() {
   const deleteProduct = async () => {
     try {
       await axios.delete(`${BASE_URL}/api/${API_PATH}/admin/product/${tempProduct.id}`);
-    } catch (error) {
+    } catch {
       alert('刪除產品失敗');
     }
   }
@@ -228,7 +228,7 @@ export default function UncleList() {
       await deleteProduct();
       getProducts();
       handleDelCloseProductModal();
-    } catch (error) {
+    } catch {
       alert('刪除產品失敗');
     }
   }

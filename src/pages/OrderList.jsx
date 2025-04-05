@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router";
 import axios from 'axios';
@@ -29,7 +29,7 @@ export default function OrderList() {
       const res = await axios.get(`${BASE_URL}/api/${API_PATH}/admin/orders`);
       // 讀取資料庫訂單資料，並進行更新
       setOrders(res.data.orders);
-    } catch (error) {
+    } catch {
       alert("取得訂單失敗");
     } finally {
       setIsScreenLoading(false);
@@ -37,15 +37,15 @@ export default function OrderList() {
   }
 
   // 驗證是否已登入
-  const checkUserLogin = async () => {
+  const checkUserLogin = useCallback(async () => {
     try {
       await axios.post(`${BASE_URL}/api/user/check`);
       getOrders();
       setIsAuth(true);
-    } catch (error) {
-      alert(error);
+    } catch {
+      alert("驗證登入失敗");
     }
-  }
+  }, [])
 
   useEffect(() => {
     // 取得驗證token
@@ -61,7 +61,7 @@ export default function OrderList() {
       checkUserLogin();
     }
 
-  }, [])
+  }, [checkUserLogin, navigate])
 
   // delProductModal DOM元素
   const delOrderModalRef = useRef(null);
@@ -96,7 +96,7 @@ export default function OrderList() {
   const deleteOrder = async () => {
     try {
       await axios.delete(`${BASE_URL}/api/${API_PATH}/admin/order/${tempOrder.id}`);
-    } catch (error) {
+    } catch {
       alert('刪除訂單失敗');
     }
   }
@@ -107,7 +107,7 @@ export default function OrderList() {
       await deleteOrder();
       getOrders();
       handleDelCloseOrderModal();
-    } catch (error) {
+    } catch {
       alert('刪除訂單失敗');
     }
   }
