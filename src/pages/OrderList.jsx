@@ -118,7 +118,7 @@ export default function OrderList() {
         <h2 className="text-start banner-title mb-2">訂單列表</h2>
       </div>
       {isAuth ? (
-        <div className="container py-3">
+        <div className="container py-3" style={{height: '100vh'}}>
           <div className="row">
             <div className="col">
               <table className="table table-bordered rounded-3 overflow-hidden text-center">

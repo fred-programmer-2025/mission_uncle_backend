@@ -11,5 +11,5 @@ export default defineConfig({
       }
     }
   },
-  base: '/mission_uncle_backend_eddie/',
+  base: '/mission_uncle_backend/',
 })
