@@ -239,7 +239,7 @@ export default function UncleList() {
       <h2 className="text-start banner-title mb-2">大叔列表</h2>
     </div>
     {isAuth ? (
-      <div className="container py-3" style={{height: '100vh'}}>
+      <div className="container vh-100 py-3">
         <div className="row">
           <div className="col">
             <div className="d-flex justify-content-end mb-3">
