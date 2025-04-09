@@ -54,7 +54,7 @@ export default function Admin() {
     // 驗證是否已登入
     const checkUserLogin = async () => {
         try {
-        await axios.post(`${BASE_URL}/api/user/check`);
+            await axios.post(`${BASE_URL}/api/user/check`);
             navigate('/unclelist');
         } catch (error) {
             alert(error);

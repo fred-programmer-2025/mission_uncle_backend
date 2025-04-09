@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router";
 import axios from 'axios';
+import Pagination from '../components/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/BannerStyle.scss";
 import "../styles/UncleBackEnd.scss";
@@ -28,32 +29,38 @@ export default function UncleList() {
   const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [tempProduct, setTempProduct] = useState(defaultModalState);
   const [products, setProducts] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
   const navigate = useNavigate();
 
   // 取得產品資料
-  const getProducts = async () => {
+  const getProducts = async (page=1) => {
     setIsScreenLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}/api/${API_PATH}/admin/products`);
-      // 讀取資料庫產品資料，並進行更新
-      setProducts(res.data.products);
+        const res = await axios.get(`${BASE_URL}/api/${API_PATH}/admin/products?page=${page}`);
+        // 讀取資料庫產品資料，並進行更新
+        setProducts(res.data.products);
+        setPageInfo(res.data.pagination);
     } catch {
-      alert("取得產品失敗");
+        alert("取得產品失敗");
     } finally {
-      setIsScreenLoading(false);
+        setIsScreenLoading(false);
     }
   }
 
+  const handlePageChange = (page) => {
+    getProducts(page);
+  }
+
   // 驗證是否已登入
-  const checkUserLogin = useCallback(async () => {
+  const checkUserLogin = async () => {
     try {
-      await axios.post(`${BASE_URL}/api/user/check`);
-      getProducts();
-      setIsAuth(true);
+        await axios.post(`${BASE_URL}/api/user/check`);
+        getProducts();
+        setIsAuth(true);
     } catch {
-      alert("驗證登入失敗");
+        alert("驗證登入失敗");
     }
-  }, [])
+  }
 
   useEffect(() => {
     // 取得驗證token
@@ -68,8 +75,7 @@ export default function UncleList() {
       axios.defaults.headers.common['Authorization'] = token;
       checkUserLogin();
     }
-
-  }, [checkUserLogin, navigate])
+  }, [])
 
   // 取得productModal DOM元素
   const productModalRef = useRef(null);
@@ -258,10 +264,10 @@ export default function UncleList() {
               <tbody>
                 {products.map((product) => (
                   <tr key={product.id}>
-                    <th scope="row" style={{color: '#73DB6A'}}>{product.title}</th>
+                    <th scope="row" style={{color: '#000000'}}>{product.title}</th>
                     <td>{`NT ${product.origin_price.toLocaleString({ style: 'currency', currency: 'TWD' })}`}</td>
                     <td>{`NT ${product.price.toLocaleString({ style: 'currency', currency: 'TWD' })}`}</td>
-                    <td>{product.is_enabled ? <span className="text-primary">啟用</span> : <span className="text-danger">未啟用</span>}</td>
+                    <td>{product.is_enabled ? <span className="text-custom-color">啟用</span> : <span className="text-danger">未啟用</span>}</td>
                     <td>
                     <div className="">
                       <button type="button" className="btn btn-sm btn-edit me-2" onClick={() => handleOpenProductModal('edit', product)}><i className="bi bi-pencil">編輯</i></button>
@@ -274,6 +280,7 @@ export default function UncleList() {
             </table>
           </div>
         </div>
+        <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
       </div>
     ) : 
     (<div className="container" style={{
