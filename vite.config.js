@@ -12,3 +12,4 @@ export default defineConfig({
     }
   },
   base: '/mission_uncle_backend/',
+})

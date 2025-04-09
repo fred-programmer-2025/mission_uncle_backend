@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router";
 import axios from 'axios';
+import Pagination from '../components/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/BannerStyle.scss";
 import "../styles/UncleBackEnd.scss";
@@ -20,30 +21,36 @@ export default function OrderList() {
   const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [tempOrder, setTempOrder] = useState(defaultModalState);
+  const [pageInfo, setPageInfo] = useState({});
   const navigate = useNavigate();
 
   // 取得訂單資料
-  const getOrders = async () => {
+  const getOrders = async (page=1) => {
     setIsScreenLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}/api/${API_PATH}/admin/orders`);
-      // 讀取資料庫訂單資料，並進行更新
-      setOrders(res.data.orders);
+        const res = await axios.get(`${BASE_URL}/api/${API_PATH}/admin/orders?page=${page}`);
+        // 讀取資料庫訂單資料，並進行更新
+        setOrders(res.data.orders);
+        setPageInfo(res.data.pagination);
     } catch {
-      alert("取得訂單失敗");
+        alert("取得訂單失敗");
     } finally {
-      setIsScreenLoading(false);
+        setIsScreenLoading(false);
     }
+  }
+
+  const handlePageChange = (page) => {
+    getOrders(page);
   }
 
   // 驗證是否已登入
   const checkUserLogin = useCallback(async () => {
     try {
-      await axios.post(`${BASE_URL}/api/user/check`);
-      getOrders();
-      setIsAuth(true);
+        await axios.post(`${BASE_URL}/api/user/check`);
+        getOrders();
+        setIsAuth(true);
     } catch {
-      alert("驗證登入失敗");
+        alert("驗證登入失敗");
     }
   }, [])
 
@@ -61,7 +68,7 @@ export default function OrderList() {
       checkUserLogin();
     }
 
-  }, [checkUserLogin, navigate])
+  }, [])
 
   // delProductModal DOM元素
   const delOrderModalRef = useRef(null);
@@ -135,11 +142,11 @@ export default function OrderList() {
                 <tbody>
                   {orders?.map((order) => (
                     <tr key={order.id}>
-                      <th scope="row" style={{color: '#73DB6A'}}>{order.user.name}</th>
+                      <th scope="row" style={{color: '#000000'}}>{order.user.name}</th>
                       <td>{order.user.email}</td>
                       <td>{order.user.tel}</td>
                       <td>{order.user.payment}</td>
-                      <td>{order.is_paid ? <span className="text-primary">已付款</span> : <span className="text-danger">未付款</span>}</td>
+                      <td>{order.is_paid ? <span className="text-custom-color">已付款</span> : <span className="text-danger">未付款</span>}</td>
                       <td>
                       <div className="">
                         {/* <button type="button" className="btn btn-sm btn-edit me-2"><i className="bi bi-pencil">編輯</i></button> */}
@@ -152,6 +159,7 @@ export default function OrderList() {
               </table>
             </div>
           </div>
+          <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
         </div>
       ) : 
       (<div className="container" style={{
