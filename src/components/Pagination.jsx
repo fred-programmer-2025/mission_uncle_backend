@@ -4,7 +4,7 @@ function Pagination({ pageInfo, handlePageChange }) {
         <nav>
           <ul className="pagination">
             <li className={`page-item ${!pageInfo.has_pre && 'disabled'}`}>
-              <a className="page-link" href="#" onClick={(e) => {
+              <a className="page-link text-dark" href="#" onClick={(e) => {
                 e.preventDefault()
                 handlePageChange(pageInfo.current_page-1)}}>
                 上一頁
@@ -14,7 +14,7 @@ function Pagination({ pageInfo, handlePageChange }) {
             {Array.from({length: pageInfo.total_pages}).map((_, index) => 
             (
               <li className={`page-item ${pageInfo.current_page === index+1 && 'active'}`} key={index}>
-                <a className="page-link" href="#" onClick={(e) => {
+                <a className="page-link text-dark" href="#" onClick={(e) => {
                   e.preventDefault()
                   handlePageChange(index+1)}}>
                   {index+1}
@@ -23,7 +23,7 @@ function Pagination({ pageInfo, handlePageChange }) {
             ))}
 
             <li className={`page-item ${!pageInfo.has_next && 'disabled'}`}>
-              <a className="page-link" href="#" onClick={(e) => {
+              <a className="page-link text-dark" href="#" onClick={(e) => {
                 e.preventDefault()
                 handlePageChange(pageInfo.current_page+1)}}>
                 下一頁
