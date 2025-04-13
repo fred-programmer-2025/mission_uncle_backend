@@ -4,6 +4,10 @@
   
 }
 
+.text-custom-color {
+  color: #73DB6A;
+}
+
 h1, p, th, td, i, #productModal, #delProductModal, #form-login {
     font-family: 'Noto Sans TC', sans-serif;
 }
@@ -25,4 +29,18 @@ h1, p, th, td, i, #productModal, #delProductModal, #form-login {
     &:hover {
       background-color: #333435;
     }
+}
+
+.page-item.active .page-link {
+  background-color: #73DB6A;
+  border-color: #73DB6A;
+  color: #ffffff;
+}
+
+.page-link {
+  color: #73DB6A;
+}
+
+.page-link:hover {
+  color: #73DB6A;
 }
